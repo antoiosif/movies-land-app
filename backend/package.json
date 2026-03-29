@@ -1,0 +1,25 @@
+{
+  "name": "movies-land",
+  "version": "1.0.0",
+  "description": "A movie search app that allows users to save movies as favorites. It is integrated with OMDb API for movie title search, and provides a CRUD API to manage users and their favorites.",
+  "keywords": [
+    "users",
+    "favorites",
+    "CRUD"
+  ],
+  "homepage": "https://github.com/antoiosif/movies-land-app#readme",
+  "bugs": {
+    "url": "https://github.com/antoiosif/movies-land-app/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antoiosif/movies-land-app.git"
+  },
+  "license": "ISC",
+  "author": "Tania Iosif",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
