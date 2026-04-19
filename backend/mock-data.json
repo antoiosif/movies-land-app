@@ -1,0 +1,881 @@
+[{
+  "_id": {
+    "$oid": "69c8ee93ffa49fae00ade73c"
+  },
+  "username": "sherlock@example.com",
+  "password": "$2b$10$oSaVegn.toRW9aNlghf0QO12CgZc.sGrzvkhjEL9Fp4yu5nmRnWq.",
+  "firstname": "Sherlock",
+  "lastname": "Holmes",
+  "roles": [
+    "ADMIN",
+    "EDITOR",
+    "READER"
+  ],
+  "isActive": true,
+  "favorites": [
+    {
+      "title": "Enola Holmes",
+      "year": 2020,
+      "runtime": 123,
+      "genre": [
+        "Adventure",
+        "Crime",
+        "Drama"
+      ],
+      "director": [
+        "Harry Bradbeer"
+      ],
+      "writer": [
+        "Jack Thorne",
+        "Nancy Springer",
+        "Arthur Conan Doyle"
+      ],
+      "actors": [
+        "Millie Bobby Brown",
+        "Henry Cavill",
+        "Sam Claflin"
+      ],
+      "plot": "England, 1884 - a world on the brink of change. On the morning of her 16th birthday, Enola Holmes (Millie Bobby Brown) wakes to find that her mother (Helena Bonham Carter) has disappeared, leaving behind an odd assortment of gifts but no apparent clue as to where she's gone or why. After a free-spirited childhood, Enola suddenly finds herself under the care of her brothers Sherlock (Henry Cavill) and Mycroft (Sam Claflin), both set on sending her away to a finishing school for \"proper\" young ladies. Refusing to follow their wishes, Enola escapes to search for her mother in London. But when her journey finds her entangled in a mystery surrounding a young runaway Lord (Louis Partridge), Enola becomes a super-sleuth in her own right, outwitting her famous brother as she unravels a conspiracy that threatens to set back the course of history.",
+      "language": [
+        "English"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BMTRlYmI1NTMtYTVkYi00MjJkLWE3ZGItOThkYTdhNzBhMThhXkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 6.6,
+      "imdbId": "tt7846844",
+      "_id": {
+        "$oid": "69c8f7d1e0900eae796ccee8"
+      },
+      "createdAt": {
+        "$date": "2026-03-29T09:58:41.525Z"
+      }
+    },
+    {
+      "title": "Mr. Holmes",
+      "year": 2015,
+      "runtime": 104,
+      "genre": [
+        "Crime",
+        "Drama",
+        "Family"
+      ],
+      "director": [
+        "Bill Condon"
+      ],
+      "writer": [
+        "Mitch Cullin",
+        "Jeffrey Hatcher",
+        "Arthur Conan Doyle"
+      ],
+      "actors": [
+        "Ian McKellen",
+        "Laura Linney",
+        "Hiroyuki Sanada"
+      ],
+      "plot": "The story is set in 1947, following a long-retired Holmes living in a Sussex village with his housekeeper and her young son. But then he finds himself haunted by a thirty-year old case. Holmes memory isn't what it used to be, so he only remembers fragments of the case: a confrontation with an angry husband, and a secret bond with his beautiful, but unstable wife.",
+      "language": [
+        "English",
+        "Japanese",
+        "French"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BMTg5MjE0Njk0MF5BMl5BanBnXkFtZTgwNTgwMjQ4NTE@._V1_SX300.jpg",
+      "imdbRating": 6.8,
+      "imdbId": "tt3168230",
+      "_id": {
+        "$oid": "69ccaec253f384406c037195"
+      },
+      "createdAt": {
+        "$date": "2026-04-01T05:36:02.777Z"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2026-03-29T09:19:15.544Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-01T05:36:02.777Z"
+  },
+  "__v": 2
+},
+{
+  "_id": {
+    "$oid": "69c954c9933af76bfe105deb"
+  },
+  "username": "hercule@example.com",
+  "password": "$2b$10$S9nAkEhci7yvLQVz9zGMje96jwzyYuIiWMqy4rCt17iR0JwmSOSfW",
+  "firstname": "Hercule",
+  "lastname": "Poirot",
+  "roles": [
+    "EDITOR",
+    "READER"
+  ],
+  "isActive": true,
+  "favorites": [
+    {
+      "title": "Seven Dials Mystery",
+      "year": 1981,
+      "runtime": 132,
+      "genre": [
+        "Adventure",
+        "Mystery",
+        "Romance"
+      ],
+      "director": [
+        "Tony Wharmby"
+      ],
+      "writer": [
+        "Agatha Christie",
+        "Pat Sandys"
+      ],
+      "actors": [
+        "John Gielgud",
+        "Harry Andrews",
+        "Cheryl Campbell"
+      ],
+      "plot": "Lady Eileen \"Bundle\" Brent is a pert, aggressive young aristocrat that insinuates herself into a series of murders, stolen state secrets, and a mysterious secret society.",
+      "language": [
+        "English"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BZDQ1ZDgzNGYtNDdhOS00ZjYwLTkzNDgtNTk4ZjY4MzVjN2RhXkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 6.6,
+      "imdbId": "tt0086287",
+      "_id": {
+        "$oid": "69c96757ccf1c6f02e315010"
+      },
+      "createdAt": {
+        "$date": "2026-03-29T17:54:31.332Z"
+      }
+    },
+    {
+      "title": "Death on the Nile",
+      "year": 2022,
+      "runtime": 127,
+      "genre": [
+        "Crime",
+        "Drama",
+        "Mystery"
+      ],
+      "director": [
+        "Kenneth Branagh"
+      ],
+      "writer": [
+        "Michael Green",
+        "Agatha Christie"
+      ],
+      "actors": [
+        "Tom Bateman",
+        "Annette Bening",
+        "Kenneth Branagh"
+      ],
+      "plot": "Belgian sleuth Hercule Poirot's vacation aboard a glamorous river steamer turns into a terrifying search for a murderer when a picture-perfect couple's idyllic honeymoon is tragically cut short. Set against an epic landscape of sweeping Egyptian desert vistas and the majestic Giza pyramids, this tale of unbridled passion and incapacitating jealousy features a cosmopolitan group of impeccably dressed travelers, and enough wicked twists and turns to leave audiences guessing until the final, shocking denouement.",
+      "language": [
+        "English",
+        "French",
+        "German"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BYjBkMTRkMmUtNGQ5Ni00YjkwLThhMmMtZjI1M2U2NzRhNjkwXkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 6.3,
+      "imdbId": "tt7657566",
+      "_id": {
+        "$oid": "69ca08134613b302effb2390"
+      },
+      "createdAt": {
+        "$date": "2026-03-30T05:20:19.541Z"
+      }
+    },
+    {
+      "title": "A Haunting in Venice",
+      "year": 2023,
+      "runtime": 103,
+      "genre": [
+        "Crime",
+        "Drama",
+        "Horror"
+      ],
+      "director": [
+        "Kenneth Branagh"
+      ],
+      "writer": [
+        "Michael Green",
+        "Agatha Christie"
+      ],
+      "actors": [
+        "Kenneth Branagh",
+        "Michelle Yeoh",
+        "Jamie Dornan"
+      ],
+      "plot": "In post-World War II Venice, Poirot, now retired and living in his own exile, reluctantly attends a seance. But when one of the guests is murdered, it is up to the former detective to once again uncover the killer.",
+      "language": [
+        "English",
+        "Italian",
+        "French",
+        "Latin"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BOTgwODdhZTMtYTFiNy00NzI1LTkwZWEtNjI2NWZiMzFmMjJlXkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 6.5,
+      "imdbId": "tt22687790",
+      "_id": {
+        "$oid": "69ce1070abb69d2b865bdd9d"
+      },
+      "createdAt": {
+        "$date": "2026-04-02T06:45:04.371Z"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2026-03-29T16:35:21.534Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-02T06:45:04.371Z"
+  },
+  "__v": 3
+},
+{
+  "_id": {
+    "$oid": "69ca07556571c77163d9a548"
+  },
+  "username": "oscar@example.com",
+  "password": "$2b$10$MKrmLxs57WWqvKVZKkskTersNd60f4UxW5RVOuV./L7Xuh91zAffm",
+  "firstname": "Oscar",
+  "lastname": "Academy",
+  "roles": [
+    "EDITOR",
+    "READER"
+  ],
+  "isActive": true,
+  "favorites": [
+    {
+      "title": "Casablanca",
+      "year": 1942,
+      "runtime": 102,
+      "genre": [
+        "Drama",
+        "Romance",
+        "War"
+      ],
+      "director": [
+        "Michael Curtiz"
+      ],
+      "writer": [
+        "Philip G. Epstein",
+        "Julius J. Epstein",
+        "Howard Koch"
+      ],
+      "actors": [
+        "Humphrey Bogart",
+        "Ingrid Bergman",
+        "Paul Henreid"
+      ],
+      "plot": "The story of Rick Blaine, a cynical world-weary ex-patriate who runs a nightclub in Casablanca, Morocco during the early stages of WWII. Despite the pressure he constantly receives from the local authorities, Rick's cafe has become a kind of haven for refugees seeking to obtain illicit letters that will help them escape to America. But when Ilsa, a former lover of Rick's, and her husband, show up to his cafe one day, Rick faces a tough challenge which will bring up unforeseen complications, heartbreak and ultimately an excruciating decision to make.",
+      "language": [
+        "English",
+        "French",
+        "German",
+        "Italian",
+        "Russian"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BNWEzN2U1YTYtYTQyMS00NTVkLWE2NGQtZWFlMmM0MDNjMmRiXkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 8.5,
+      "imdbId": "tt0034583",
+      "_id": {
+        "$oid": "69ca087c4613b302effb2392"
+      },
+      "createdAt": {
+        "$date": "2026-03-30T05:22:04.334Z"
+      }
+    },
+    {
+      "title": "The Godfather",
+      "year": 1972,
+      "runtime": 175,
+      "genre": [
+        "Crime",
+        "Drama"
+      ],
+      "director": [
+        "Francis Ford Coppola"
+      ],
+      "writer": [
+        "Mario Puzo",
+        "Francis Ford Coppola"
+      ],
+      "actors": [
+        "Marlon Brando",
+        "Al Pacino",
+        "James Caan"
+      ],
+      "plot": "The Godfather \"Don\" Vito Corleone is the head of the Corleone mafia family in New York. He is at the event of his daughter's wedding. Michael, Vito's youngest son and a decorated WW II Marine is also present at the wedding. Michael seems to be uninterested in being a part of the family business. Vito is a powerful man, and is kind to all those who give him respect but is ruthless against those who do not. But when a powerful and treacherous rival wants to sell drugs and needs the Don's influence for the same, Vito refuses to do it. What follows is a clash between Vito's fading old values and the new ways which may cause Michael to do the thing he was most reluctant in doing and wage a mob war against all the other mafia families which could tear the Corleone family apart.",
+      "language": [
+        "English",
+        "Italian",
+        "Latin"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BNGEwYjgwOGQtYjg5ZS00Njc1LTk2ZGEtM2QwZWQ2NjdhZTE5XkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 9.2,
+      "imdbId": "tt0068646",
+      "_id": {
+        "$oid": "69ca08c34613b302effb2394"
+      },
+      "createdAt": {
+        "$date": "2026-03-30T05:23:15.496Z"
+      }
+    },
+    {
+      "title": "Schindler's List",
+      "year": 1993,
+      "runtime": 195,
+      "genre": [
+        "Biography",
+        "Drama",
+        "History"
+      ],
+      "director": [
+        "Steven Spielberg"
+      ],
+      "writer": [
+        "Thomas Keneally",
+        "Steven Zaillian"
+      ],
+      "actors": [
+        "Liam Neeson",
+        "Ralph Fiennes",
+        "Ben Kingsley"
+      ],
+      "plot": "Oskar Schindler is a vain and greedy German businessman who becomes an unlikely humanitarian amid the barbaric German Nazi reign when he feels compelled to turn his factory into a refuge for Jews. Based on the true story of Oskar Schindler who managed to save about 1100 Jews from being gassed at the Auschwitz concentration camp, it is a testament to the good in all of us.",
+      "language": [
+        "English",
+        "Hebrew",
+        "German",
+        "Polish",
+        "Latin"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BNjM1ZDQxYWUtMzQyZS00MTE1LWJmZGYtNGUyNTdlYjM3ZmVmXkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 9,
+      "imdbId": "tt0108052",
+      "_id": {
+        "$oid": "69cabc525c9a232828f6ece5"
+      },
+      "createdAt": {
+        "$date": "2026-03-30T18:09:22.755Z"
+      }
+    },
+    {
+      "title": "12 Years a Slave",
+      "year": 2013,
+      "runtime": 134,
+      "genre": [
+        "Biography",
+        "Drama",
+        "History"
+      ],
+      "director": [
+        "Steve McQueen"
+      ],
+      "writer": [
+        "John Ridley",
+        "Solomon Northup"
+      ],
+      "actors": [
+        "Chiwetel Ejiofor",
+        "Michael Kenneth Williams",
+        "Michael Fassbender"
+      ],
+      "plot": "Based on an incredible true story of one man's fight for survival and freedom. In the pre-Civil War United States, Solomon Northup, a free black man from upstate New York, is abducted and sold into slavery. Facing cruelty personified by a malevolent slave owner, as well as unexpected kindnesses, Solomon struggles not only to stay alive, but to retain his dignity. In the twelfth year of his unforgettable odyssey, Solomon's chance meeting with a Canadian abolitionist will forever alter his life.",
+      "language": [
+        "English"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BMjExMTEzODkyN15BMl5BanBnXkFtZTcwNTU4NTc4OQ@@._V1_SX300.jpg",
+      "imdbRating": 8.1,
+      "imdbId": "tt2024544",
+      "_id": {
+        "$oid": "69cb60e39fb5a85478751047"
+      },
+      "createdAt": {
+        "$date": "2026-03-31T05:51:31.153Z"
+      }
+    },
+    {
+      "title": "CODA",
+      "year": 2021,
+      "runtime": 111,
+      "genre": [
+        "Comedy",
+        "Drama",
+        "Music"
+      ],
+      "director": [
+        "Sian Heder"
+      ],
+      "writer": [
+        "Sian Heder",
+        "Victoria Bedos",
+        "Stanislas Carré de Malberg"
+      ],
+      "actors": [
+        "Emilia Jones",
+        "Marlee Matlin",
+        "Troy Kotsur"
+      ],
+      "plot": "Gloucester, Massachusetts. As a Child of Deaf Adults and the only hearing person in her family, high school senior Ruby Rossi always has a lot on her plate. Indeed, trying to juggle back-breaking work on her father's fishing boat, schoolwork, social life, and the family's expectations can be too much for a teenager. But do her parents know Ruby loves to sing? When Ruby signs up for the school choir, singing becomes a passion, and suddenly, the talented young girl finds herself at a crossroads: should Ruby spread her wings and follow her dreams, or should she keep fighting everyday battles as a member of the proud Rossi clan?",
+      "language": [
+        "American Sign",
+        "English"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BNzIzOTNjOTQtM2QzOC00NjFlLTljZDUtZmI4Yjg1YTkyMTBiXkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 8,
+      "imdbId": "tt10366460",
+      "_id": {
+        "$oid": "69cb61789c269a5b6c55eae3"
+      },
+      "createdAt": {
+        "$date": "2026-03-31T05:54:00.620Z"
+      }
+    },
+    {
+      "title": "Oppenheimer",
+      "year": 2023,
+      "runtime": 180,
+      "genre": [
+        "Biography",
+        "Drama",
+        "History"
+      ],
+      "director": [
+        "Christopher Nolan"
+      ],
+      "writer": [
+        "Christopher Nolan",
+        "Kai Bird",
+        "Martin Sherwin"
+      ],
+      "actors": [
+        "Cillian Murphy",
+        "Emily Blunt",
+        "Matt Damon"
+      ],
+      "plot": "A dramatization of the life story of J. Robert Oppenheimer, the physicist who had a large hand in the development of the atomic bombs that brought an end to World War II.",
+      "language": [
+        "English",
+        "German",
+        "Italian",
+        "Dutch"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BN2JkMDc5MGQtZjg3YS00NmFiLWIyZmQtZTJmNTM5MjVmYTQ4XkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 8.2,
+      "imdbId": "tt15398776",
+      "_id": {
+        "$oid": "69cb61aa9c269a5b6c55eae5"
+      },
+      "createdAt": {
+        "$date": "2026-03-31T05:54:50.652Z"
+      }
+    },
+    {
+      "title": "Lawrence of Arabia",
+      "year": 1962,
+      "runtime": 227,
+      "genre": [
+        "Adventure",
+        "Biography",
+        "Drama"
+      ],
+      "director": [
+        "David Lean"
+      ],
+      "writer": [
+        "Robert Bolt",
+        "Michael Wilson"
+      ],
+      "actors": [
+        "Peter O'Toole",
+        "Alec Guinness",
+        "Anthony Quinn"
+      ],
+      "plot": "Due to his knowledge of the native Bedouin tribes, British Lieutenant T.E. Lawrence is sent to Arabia to find Prince Faisal and serve as a liaison between the Arabs and the British in their fight against the Turks. With the aid of native Sherif Ali, Lawrence rebels against the orders of his superior officer and strikes out on a daring camel journey across the harsh desert to attack a well-guarded Turkish port.",
+      "language": [
+        "English",
+        "Arabic",
+        "Turkish"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BYjY0YTQ1OTAtYjEyNy00NTQ4LThlMTQtM2QwYTVhYWFhNjU5XkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 8.3,
+      "imdbId": "tt0056172",
+      "_id": {
+        "$oid": "69ccaf0753f384406c037197"
+      },
+      "createdAt": {
+        "$date": "2026-04-01T05:37:11.431Z"
+      }
+    },
+    {
+      "title": "Amadeus",
+      "year": 1984,
+      "runtime": 160,
+      "genre": [
+        "Biography",
+        "Drama",
+        "Music"
+      ],
+      "director": [
+        "Milos Forman"
+      ],
+      "writer": [
+        "Peter Shaffer",
+        "Zdenek Mahler"
+      ],
+      "actors": [
+        "F. Murray Abraham",
+        "Tom Hulce",
+        "Elizabeth Berridge"
+      ],
+      "plot": "Antonio Salieri believes that Wolfgang Amadeus Mozart's music is divine and miraculous. He wishes he was himself as good a musician as Mozart so that he can praise the Lord through composing. He began his career as a devout man who believes his success and talent as a composer are God's rewards for his piety. He's also content as the respected, financially well-off, court composer of Austrian Emperor Joseph II. But he's shocked to learn that Mozart is such a vulgar creature, and can't understand why God favored Mozart to be his instrument. Salieri's envy has made him an enemy of God whose greatness was evident in Mozart. He is ready to take revenge against God and Mozart for his own musical mediocrity.",
+      "language": [
+        "English",
+        "Italian",
+        "Latin",
+        "German",
+        "French"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BMzc2MjM0NTMtOGY4NC00NzY1LWE2ODUtZjMzY2RhNGNkZDAyXkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 8.4,
+      "imdbId": "tt0086879",
+      "_id": {
+        "$oid": "69ccaf7253f384406c03719b"
+      },
+      "createdAt": {
+        "$date": "2026-04-01T05:38:58.718Z"
+      }
+    },
+    {
+      "title": "Slumdog Millionaire",
+      "year": 2008,
+      "runtime": 120,
+      "genre": [
+        "Crime",
+        "Drama",
+        "Romance"
+      ],
+      "director": [
+        "Danny Boyle",
+        "Loveleen Tandan"
+      ],
+      "writer": [
+        "Simon Beaufoy",
+        "Vikas Swarup"
+      ],
+      "actors": [
+        "Dev Patel",
+        "Freida Pinto",
+        "Saurabh Shukla"
+      ],
+      "plot": "The story of Jamal Malik, an 18 year-old orphan from the slums of Mumbai, who is about to experience the biggest day of his life. With the whole nation watching, he is just one question away from winning a staggering 20 million rupees on India's Kaun Banega Crorepati? (2000) (Who Wants To Be A Millionaire?) But when the show breaks for the night, police arrest him on suspicion of cheating; how could a street kid know so much? Desperate to prove his innocence, Jamal tells the story of his life in the slum where he and his brother grew up, of their adventures together on the road, of vicious encounters with local gangs, and of Latika, the girl he loved and lost. Each chapter of his story reveals the key to the answer to one of the game show's questions. Each chapter of Jamal's increasingly layered story reveals where he learned the answers to the show's seemingly impossible quizzes. But one question remains a mystery: what is this young man with no apparent desire for riches really doing on the game show? When the new day dawns and Jamal returns to answer the final question, the Inspector and sixty million viewers are about to find out. At the heart of its storytelling lies the question of how anyone comes to know the things they know about life and love.",
+      "language": [
+        "English",
+        "Hindi"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BMTE5ZTRkYWEtZmU5MC00NDJjLTk3NmUtZGJlYTM2MmQ3NTJkXkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 8,
+      "imdbId": "tt1010048",
+      "_id": {
+        "$oid": "69ccaf9a53f384406c03719d"
+      },
+      "createdAt": {
+        "$date": "2026-04-01T05:39:38.833Z"
+      }
+    },
+    {
+      "title": "Driving Miss Daisy",
+      "year": 1989,
+      "runtime": 99,
+      "genre": [
+        "Comedy",
+        "Drama"
+      ],
+      "director": [
+        "Bruce Beresford"
+      ],
+      "writer": [
+        "Alfred Uhry"
+      ],
+      "actors": [
+        "Morgan Freeman",
+        "Jessica Tandy",
+        "Dan Aykroyd"
+      ],
+      "plot": "An elderly Jewish widow living in Atlanta can no longer drive. Her son insists she allow him to hire a driver, which in the 1950s meant a black man. She resists any change in her life but, Hoke, the driver is hired by her son. She refuses to allow him to drive her anywhere at first, but Hoke slowly wins her over with his native good graces. The movie is directly taken from a stage play and does show it. It covers over twenty years of the pair's life together as they slowly build a relationship that transcends their differences.",
+      "language": [
+        "English",
+        "Hebrew"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BN2M2MWUyZmQtMmI4Yi00NGE2LWFiZmEtNDZkZmYxNWRlM2Y1XkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 7.3,
+      "imdbId": "tt0097239",
+      "_id": {
+        "$oid": "69d4aafdab3a371c429451c8"
+      },
+      "createdAt": {
+        "$date": "2026-04-07T06:58:05.695Z"
+      }
+    },
+    {
+      "title": "Gladiator",
+      "year": 2000,
+      "runtime": 155,
+      "genre": [
+        "Action",
+        "Adventure",
+        "Drama"
+      ],
+      "director": [
+        "Ridley Scott"
+      ],
+      "writer": [
+        "David Franzoni",
+        "John Logan",
+        "William Nicholson"
+      ],
+      "actors": [
+        "Russell Crowe",
+        "Joaquin Phoenix",
+        "Connie Nielsen"
+      ],
+      "plot": "Maximus is a powerful Roman general, loved by the people and the aging Emperor, Marcus Aurelius. Before his death, the Emperor chooses Maximus to be his heir over his own son, Commodus, and a power struggle leaves Maximus and his family condemned to death. The powerful general is unable to save his family, and his loss of will allows him to get captured and put into the Gladiator games until he dies. The only desire that fuels him now is the chance to rise to the top so that he will be able to look into the eyes of the man who will feel his revenge.",
+      "language": [
+        "English"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BYWQ4YmNjYjEtOWE1Zi00Y2U4LWI4NTAtMTU0MjkxNWQ1ZmJiXkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 8.5,
+      "imdbId": "tt0172495",
+      "_id": {
+        "$oid": "69d4ab5eab3a371c429451d6"
+      },
+      "createdAt": {
+        "$date": "2026-04-07T06:59:42.827Z"
+      }
+    },
+    {
+      "title": "Forrest Gump",
+      "year": 1994,
+      "runtime": 142,
+      "genre": [
+        "Drama",
+        "Romance"
+      ],
+      "director": [
+        "Robert Zemeckis"
+      ],
+      "writer": [
+        "Winston Groom",
+        "Eric Roth"
+      ],
+      "actors": [
+        "Tom Hanks",
+        "Robin Wright",
+        "Gary Sinise"
+      ],
+      "plot": "Forrest Gump is a simple man with a low I.Q. but good intentions. He is running through childhood with his best and only friend Jenny. His 'mama' teaches him the ways of life and leaves him to choose his destiny. Forrest joins the army for service in Vietnam, finding new friends called Dan and Bubba, he wins medals, creates a famous shrimp fishing fleet, inspires people to jog, starts a ping-pong craze, creates the smiley, writes bumper stickers and songs, donates to people and meets the president several times. However, this is all irrelevant to Forrest who can only think of his childhood sweetheart Jenny Curran, who has messed up her life. Although in the end all he wants to prove is that anyone can love anyone.",
+      "language": [
+        "English"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BNDYwNzVjMTItZmU5YS00YjQ5LTljYjgtMjY2NDVmYWMyNWFmXkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 8.8,
+      "imdbId": "tt0109830",
+      "_id": {
+        "$oid": "69d4abaaab3a371c429451e5"
+      },
+      "createdAt": {
+        "$date": "2026-04-07T07:00:58.368Z"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2026-03-30T05:17:09.594Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-07T07:00:58.368Z"
+  },
+  "__v": 12
+},
+{
+  "_id": {
+    "$oid": "69ccaf3a53f384406c037199"
+  },
+  "username": "lizzy@example.com",
+  "password": "$2b$10$On3AN8Y8M20CqPjaxmYKzOXDTOvJvDNjHFHkE2ciJ4MpwkewIcQ8W",
+  "firstname": "Elizabeth",
+  "lastname": "Bennet",
+  "roles": [
+    "EDITOR",
+    "READER"
+  ],
+  "isActive": true,
+  "favorites": [
+    {
+      "title": "Pride & Prejudice",
+      "year": 2005,
+      "runtime": 129,
+      "genre": [
+        "Drama",
+        "Romance"
+      ],
+      "director": [
+        "Joe Wright"
+      ],
+      "writer": [
+        "Deborah Moggach",
+        "Jane Austen",
+        "Emma Thompson"
+      ],
+      "actors": [
+        "Keira Knightley",
+        "Matthew Macfadyen",
+        "Brenda Blethyn"
+      ],
+      "plot": "The story is based on Jane Austen's novel about five sisters - Jane (Rosamund Pike), Elizabeth (Keira Knightley), Mary (Talulah Riley), Kitty (Carey Mulligan), and Lydia Bennet (Jena Malone) - in Georgian England. Their lives are turned upside down when wealthy young Mr. Bingley (Simon Woods) and his best friend, Mr. Darcy (Matthew Macfadyen), arrive in their neighborhood.",
+      "language": [
+        "English"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BMTA1NDQ3NTcyOTNeQTJeQWpwZ15BbWU3MDA0MzA4MzE@._V1_SX300.jpg",
+      "imdbRating": 7.8,
+      "imdbId": "tt0414387",
+      "_id": {
+        "$oid": "69ce118cabb69d2b865bdda7"
+      },
+      "createdAt": {
+        "$date": "2026-04-02T06:49:48.628Z"
+      }
+    },
+    {
+      "title": "Emma",
+      "year": 1996,
+      "runtime": 120,
+      "genre": [
+        "Comedy",
+        "Drama",
+        "Romance"
+      ],
+      "director": [
+        "Douglas McGrath"
+      ],
+      "writer": [
+        "Jane Austen",
+        "Douglas McGrath"
+      ],
+      "actors": [
+        "Gwyneth Paltrow",
+        "James Cosmo",
+        "Greta Scacchi"
+      ],
+      "plot": "Emma Woodhouse is a congenial young lady who delights in meddling in other people's affairs. She is perpetually trying to unite men and women who are utterly wrong for each other. Despite her interest in romance, Emma is clueless about her own feelings, and her relationship with gentle Mr. Knightly.",
+      "language": [
+        "English"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BZTZlN2YyMjMtYTlhYy00YWZmLTg5YTUtN2MzYTVlNDlmN2FhXkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 6.6,
+      "imdbId": "tt0116191",
+      "_id": {
+        "$oid": "69d4ac65ab3a371c429451ee"
+      },
+      "createdAt": {
+        "$date": "2026-04-07T07:04:05.227Z"
+      }
+    },
+    {
+      "title": "Persuasion",
+      "year": 2022,
+      "runtime": 108,
+      "genre": [
+        "Drama",
+        "Romance"
+      ],
+      "director": [
+        "Carrie Cracknell"
+      ],
+      "writer": [
+        "Ron Bass",
+        "Alice Victoria Winslow",
+        "Jane Austen"
+      ],
+      "actors": [
+        "Richard E. Grant",
+        "Henry Golding",
+        "Ben Bailey Smith"
+      ],
+      "plot": "Living with her snobby family on the brink of bankruptcy, Anne Elliot is an unconforming woman with modern sensibilities. When Fredrick Wentworth the dashing one she once sent away crashes back into her life, Anne must choose between putting the past behind her or listening to her heart when it comes to second chances.",
+      "language": [
+        "English"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BMjNiOTQ0ZTktZTcxYy00MGYwLWJjN2UtNWRlOGE4ZWUzNjQyXkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 5.8,
+      "imdbId": "tt13456318",
+      "_id": {
+        "$oid": "69d4acaaab3a371c429451f4"
+      },
+      "createdAt": {
+        "$date": "2026-04-07T07:05:14.446Z"
+      }
+    },
+    {
+      "title": "Sense and Sensibility",
+      "year": 1995,
+      "runtime": 136,
+      "genre": [
+        "Drama",
+        "Romance"
+      ],
+      "director": [
+        "Ang Lee"
+      ],
+      "writer": [
+        "Jane Austen",
+        "Emma Thompson"
+      ],
+      "actors": [
+        "Emma Thompson",
+        "Kate Winslet",
+        "James Fleet"
+      ],
+      "plot": "When Mr. Dashwood (Tom Wilkinson) dies, he must leave the bulk of his estate to the son by his first marriage, which leaves his second wife and their three daughters Elinor (Dame Emma Thompson), Marianne (Kate Winslet), and Margaret (Emilie François), in straitened circumstances. They are taken in by a kindly cousin, but their lack of fortune affects the marriageability of practical Elinor and romantic Marianne. When Elinor forms an attachment for the wealthy Edward Ferrars (Hugh Grant), his family disapproves and separates them. And though Mrs. Jennings (Elizabeth Spriggs) tries to match the worthy (and rich) Colonel Brandon (Alan Rickman) to her, Marianne finds the dashing and fiery John Willoughby (Greg Wise) more to her taste. Both relationships are sorely tried.",
+      "language": [
+        "English",
+        "French"
+      ],
+      "poster": "https://m.media-amazon.com/images/M/MV5BY2MyZWJhNjktMWQ2My00OTgwLWI1NjEtYjUzM2M2N2M4Mzc4XkEyXkFqcGc@._V1_SX300.jpg",
+      "imdbRating": 7.7,
+      "imdbId": "tt0114388",
+      "_id": {
+        "$oid": "69d4acf8ab3a371c429451fb"
+      },
+      "createdAt": {
+        "$date": "2026-04-07T07:06:32.143Z"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2026-04-01T05:38:02.100Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-07T07:06:32.143Z"
+  },
+  "__v": 4
+},
+{
+  "_id": {
+    "$oid": "69ce11bdabb69d2b865bdda9"
+  },
+  "username": "jane@example.com",
+  "password": "$2b$10$Q8AmIs.4biVVgaFysQlKrOh2YSzXTMKE4tJXRXM75nq0Kt6VE/UBW",
+  "firstname": "Jane",
+  "lastname": "Bennet",
+  "roles": [
+    "READER"
+  ],
+  "isActive": false,
+  "favorites": [],
+  "createdAt": {
+    "$date": "2026-04-02T06:50:37.767Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T08:22:07.128Z"
+  },
+  "__v": 1
+}]
