@@ -51,7 +51,7 @@ afterEach(async () => {
 
 describe('Requests for /api/users', () => {
   describe('GET requests for /api/users', () => {
-    // deafult values for pagination
+    // default values for pagination
     const defPageSize = 10;
     const defPageNumber = 1;
 
@@ -317,7 +317,7 @@ describe('Requests for /api/users', () => {
           name: 'ValidationError',
           statusCode: 400,
           errors: {
-            _id: `Cast to ObjectId failed for value "${value}" (type string) at path "${filter}" for model "User"`
+            _id: `Cast error: "_id" must be an ObjectId`
           },
           message: 'Validation failed.'
         };
@@ -336,7 +336,7 @@ describe('Requests for /api/users', () => {
           name: 'ValidationError',
           statusCode: 400,
           errors: {
-            isActive: `Cast to Boolean failed for value "${value}" (type string) at path "${filter}" for model "User"`
+            isActive: `Cast error: "isActive" must be a Boolean`
           },
           message: 'Validation failed.'
         };
@@ -355,7 +355,7 @@ describe('Requests for /api/users', () => {
           name: 'ValidationError',
           statusCode: 400,
           errors: {
-            createdAt: `Cast to date failed for value "${value}" (type string) at path "${filter}" for model "User"`
+            createdAt: `Cast error: "createdAt" must be a date`
           },
           message: 'Validation failed.'
         };
@@ -749,11 +749,11 @@ describe('Requests for /api/users', () => {
         name: 'ValidationError',
         statusCode: 400,
         errors: {
-          username: `Cast to string failed for value "[ 'test1@example.com' ]" (type Array) at path "username"`,
-          password: `Cast to string failed for value "[ 'test1P@ss' ]" (type Array) at path "password"`,
-          firstname: `Cast to string failed for value "[ 'TestA' ]" (type Array) at path "firstname"`,
-          lastname: `Cast to string failed for value "[ 'UserA' ]" (type Array) at path "lastname"`,
-          'roles.0': `Cast to [string] failed for value "[ [ 'ADMIN' ], 'EDITOR', 'READER' ]" (type string) at path "roles.0" because of "CastError"`
+          username: 'Cast error: "username" must be a string',
+          password: 'Cast error: "password" must be a string',
+          firstname: 'Cast error: "firstname" must be a string',
+          lastname: 'Cast error: "lastname" must be a string',
+          'roles.0': 'Cast error: "roles.0" must be a [string]'
         },
         message: 'Validation failed.'
       };
@@ -849,7 +849,7 @@ describe('Requests for /api/users', () => {
       const errData = {
         name: 'AppEntityAlreadyExistsError',
         statusCode: 409,
-        message: `'username=${user.username}' already exists`
+        message: 'Username already exists.'
       };
       const res = await request(app)
         .post('/api/users')
@@ -890,7 +890,7 @@ describe('Requests for /api/users/:userId', () => {
         name: 'ValidationError',
         statusCode: 400,
         errors: {
-          _id: `Cast to ObjectId failed for value "${userId}" (type string) at path "_id" for model "User"`
+          _id: 'Cast error: "_id" must be an ObjectId'
         },
         message: 'Validation failed.'
       };
@@ -989,8 +989,7 @@ describe('Requests for /api/users/:userId', () => {
       expect(res.body.data.password).toBeUndefined();
       expect(res.body.data.firstname).toBe(updates.firstname.trim());
       expect(res.body.data.lastname).toBe(updates.lastname.trim());
-      expect(res.body.data.roles[0]).toBe(updates.roles[0].trim().toUpperCase());
-      expect(res.body.data.roles[1]).toBe(updates.roles[1].trim().toUpperCase());
+      expect(res.body.data.roles).toEqual(updates.roles.map(el => el.trim().toUpperCase()));
       expect(res.body.data.isActive).toBe(user.isActive);
       expect(res.body.data._id).toBe(user.id);
       expect(res.body.data.favorites).toEqual(user.favorites);
@@ -1012,7 +1011,7 @@ describe('Requests for /api/users/:userId', () => {
         name: 'ValidationError',
         statusCode: 400,
         errors: {
-          _id: `Cast to ObjectId failed for value "${userId}" (type string) at path "_id" for model "User"`
+          _id: 'Cast error: "_id" must be an ObjectId'
         },
         message: 'Validation failed.'
       };
@@ -1059,10 +1058,10 @@ describe('Requests for /api/users/:userId', () => {
         name: 'ValidationError',
         statusCode: 400,
         errors: {
-          firstname: `Cast to string failed for value "[ 'TESTA' ]" (type Array) at path "firstname"`,
-          lastname: `Cast to string failed for value "[ 'USERA' ]" (type Array) at path "lastname"`,
-          'roles.0': `Cast to [string] failed for value "[ [ 'READER' ] ]" (type string) at path "roles.0" because of "CastError"`,
-          isActive: 'Cast to Boolean failed for value "FALSE" (type string) at path "isActive" because of "CastError"'
+          firstname: 'Cast error: "firstname" must be a string',
+          lastname: 'Cast error: "lastname" must be a string',
+          'roles.0': 'Cast error: "roles.0" must be a [string]',
+          isActive: 'Cast error: "isActive" must be a Boolean'
         },
         message: 'Validation failed.'
       };
@@ -1155,7 +1154,7 @@ describe('Requests for /api/users/:userId', () => {
         name: 'ValidationError',
         statusCode: 400,
         errors: {
-          _id: `Cast to ObjectId failed for value "${userId}" (type string) at path "_id" for model "User"`
+          _id: 'Cast error: "_id" must be an ObjectId'
         },
         message: 'Validation failed.'
       };

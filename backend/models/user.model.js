@@ -4,30 +4,63 @@ const ValidationError = require('../errors/ValidationError');
 const AppEntityAlreadyExistsError = require('../errors/AppEntityAlreadyExistsError');
 
 const movieSchema = new mongoose.Schema({
-  title: { type: String, index: true },
-  year: { type: String, index: true },
+  title: {
+    type: String,
+    trim: true
+  },
+  year: {
+    type: Number,
+    min: [1888, '"{PATH}" must be between 1888 and 2100'],
+    max: [2100, '"{PATH}" must be between 1888 and 2100'],
+    validate: {
+      validator: Number.isInteger,    // custom validator to validate if the input is an integer
+      message: '"{PATH}" must be an integer'
+    }
+  },
   runtime: {
     type: Number,
-    min: [0, '"{PATH}" must be >= 0'],
+    min: [1, '"{PATH}" must be > 0'],
+    validate: {
+      validator: Number.isInteger,    // custom validator to validate if the input is an integer
+      message: '"{PATH}" must be an integer'
+    }
   },
-  genre: [String],
-  director: [String],
-  writer: [String],
-  actors: [String],
-  plot: { type: String },
-  language: [String],
-  poster: { type: String },
+  genre: [{
+    type: String,
+    trim: true
+  }],
+  director: [{
+    type: String,
+    trim: true
+  }],
+  writer: [{
+    type: String,
+    trim: true
+  }],
+  actors: [{
+    type: String,
+    trim: true
+  }],
+  plot: {
+    type: String,
+    trim: true
+  },
+  language: [{
+    type: String,
+    trim: true
+  }],
+  poster: {
+    type: String,
+    trim: true
+  },
   imdbRating: {
     type: Number,
     min: [0, '"{PATH}" must be between 0 and 10'],
-    max: [10, '"{PATH}" must be between 0 and 10'],
+    max: [10, '"{PATH}" must be between 0 and 10']
   },
   imdbId: {
     type: String,
-    index: {
-      sparse: true,
-      unique: true
-    }
+    trim: true
   }
 },
 {
@@ -60,8 +93,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, '"{PATH}" is required field'],
     trim: true,
-    match: [/^[a-zA-Z]{2,}$/, '"{PATH}" must contain at least 2 characters (only letters) and no spaces'],
-    index: true
+    match: [/^[a-zA-Z]{2,}$/, '"{PATH}" must contain at least 2 characters (only letters) and no spaces']
   },
   roles: {
     type: [{
@@ -108,6 +140,12 @@ userSchema.pre('save', async function() {
 // ValidationError (includes CastError and ValidatorError)
 userSchema.post('validate', function(err, doc, next) {
   if (err.name === 'ValidationError') {
+    // Custom message for 'CastError'
+    for (const value of Object.values(err.errors)) {
+      if (value.name === 'CastError') {
+        value.message = `Cast error: "${value.path}" must be ${(value.path === '_id') ? 'an' : 'a'} ${value.kind}`
+      }
+    }
     next(new ValidationError(err.errors));
   }
   next();
@@ -116,9 +154,7 @@ userSchema.post('validate', function(err, doc, next) {
 // `code 11000` - a unique field already exists in DB
 userSchema.post('save', function(err, doc, next) {
   if (err.name === 'MongoServerError' && err.code === 11000) {
-    const errorField = Object.keys(err.keyValue)[0];
-    const errorValue = err.keyValue[errorField];
-    next(new AppEntityAlreadyExistsError(`'${errorField}=${errorValue}' already exists`));
+    next(new AppEntityAlreadyExistsError('Username already exists.'));
   }
   next();
 });
@@ -129,7 +165,7 @@ userSchema.post(/^find/, function(err, doc, next) {
     // Build the object `errors` to have the same format with the one included in ValidationError
     const errors = {
       [err.path]: {
-        message: err.message
+        message: `Cast error: "${err.path}" must be ${(err.path === '_id') ? 'an' : 'a'} ${err.kind}`
       }
     };
     next(new ValidationError(errors));
