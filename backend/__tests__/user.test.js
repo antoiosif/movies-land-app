@@ -616,12 +616,12 @@ describe('Requests for /api/users', () => {
         expect(res.body.data.documents[4].username).toBe('jane@example.com');
       });
 
-      test('GET Returns a list with ALL the users sorted by `lastname` ASC with wrong format (`sortBY_field=sortDir`) - no filtering, default settings for pagination', async () => {
-        const prefix = 'sortBY_';
+      test('GET Returns a list with ALL the users sorted by `lastname` ASC with wrong format (`sortBy_field_=sortDir`) - no filtering, default settings for pagination', async () => {
+        const prefix = 'sortBy_';
         const sortField = 'lastname';
         const sortDir = 1;
         const res = await request(app)
-          .get(`/api/users?${prefix}${sortField}=${sortDir}`)
+          .get(`/api/users?${prefix}${sortField}_=${sortDir}`)
           .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);

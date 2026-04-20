@@ -823,12 +823,12 @@ describe('Requests for /api/users/:userId/favorites', () => {
         expect(res.body.data.documents[9].title).toBe(user.favorites[9].title);
       });
 
-      test('GET Returns a list with ALL the favorites of the user with a given ID, sorted by `title` ASC with wrong format (`sortBY_field=sortDir`) - no filtering, default settings for pagination', async () => {
+      test('GET Returns a list with ALL the favorites of the user with a given ID, sorted by `title` ASC with wrong format (`sortBy_field_=sortDir`) - no filtering, default settings for pagination', async () => {
         const user = await userService.getUserByUsername(username);
         const sortField = 'title';
         const sortDir = 1;
         const res = await request(app)
-          .get(`/api/users/${user._id}/favorites?sortBY_${sortField}=${sortDir}`)
+          .get(`/api/users/${user._id}/favorites?sortBy_${sortField}_=${sortDir}`)
           .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
