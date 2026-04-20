@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const app = require('./app');
+const logger = require('./logger/logger');
 const port = process.env.PORT || 3000;
 const options = {
   dbName: 'moviesdb',
@@ -12,10 +13,10 @@ const options = {
 mongoose.connect(process.env.MONGODB_URI, options)
 .then(
   () => {
-    console.log('Connection to MongoDB established');
+    logger.info('Connection to MongoDB established');
     app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
+      logger.info(`Server running on port ${port}`);
     });
   },
-  err => console.error('Failed to connect to MongoDB', err)
+  err => logger.error('Failed to connect to MongoDB', err)
 );

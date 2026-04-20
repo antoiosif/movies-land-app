@@ -3,6 +3,7 @@ const authService = require('../services/auth.service');
 const userService = require('../services/user.service');
 const AppNotAuthorizedError = require('../errors/AppNotAuthorizedError');
 const httpStatusCodes = require('../utils/http-status-codes');
+const logger = require('../logger/logger');
 
 exports.login = async (req, res) => {
   const { username, password } = req.body;
@@ -16,6 +17,6 @@ exports.login = async (req, res) => {
     throw new AppNotAuthorizedError(`Authentication failed. User with 'username=${username}' not logged in.`);
   }
   const token = authService.generateAccessToken(user);
-  console.log(`User with 'username=${username}' logged in.`);
+  logger.info(`User with 'username=${username}' logged in.`);
   res.status(httpStatusCodes.OK).json({status: true, data: token});
 }

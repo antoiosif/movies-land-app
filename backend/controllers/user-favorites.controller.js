@@ -1,5 +1,6 @@
 const userFavoritesService = require('../services/user-favorites.service');
 const httpStatusCodes = require('../utils/http-status-codes');
+const logger = require('../logger/logger');
 
 exports.insertFavorite = async (req, res) => {
   const userId = req.params.userId;
@@ -18,21 +19,21 @@ exports.insertFavorite = async (req, res) => {
     imdbId: req.body.imdbId
   };
   const result = await userFavoritesService.insertFavorite(userId, favorite);
-  console.log(`Favorite with 'id=${result.favorites.at(-1)._id}' of User with 'id=${userId}' was inserted.`);
+  logger.info(`Favorite with 'id=${result.favorites.at(-1)._id}' of User with 'id=${userId}' was inserted.`);
   res.status(httpStatusCodes.CREATED).json({status: true, data: result});
 }
 
 exports.deleteFavorite = async (req, res) => {
   const { userId, favoriteId } = req.params;
   const result = await userFavoritesService.deleteFavorite(userId, favoriteId);
-  console.log(`Favorite with 'id=${favoriteId}' of User with 'id=${userId}' was deleted.`);
+  logger.info(`Favorite with 'id=${favoriteId}' of User with 'id=${userId}' was deleted.`);
   res.status(httpStatusCodes.OK).json({status: true, data: result});
 }
 
 exports.getFavorite = async (req, res) => {
   const { userId, favoriteId } = req.params;
   const result = await userFavoritesService.getFavorite(userId, favoriteId);
-  console.log(`Favorite with 'id=${favoriteId}' of User with 'id=${userId}' was returned.`);
+  logger.debug(`Favorite with 'id=${favoriteId}' of User with 'id=${userId}' was returned.`);
   res.status(httpStatusCodes.OK).json({status: true, data: result});
 }
 
@@ -40,6 +41,6 @@ exports.getFavoritesFilteredSortedPaginated = async (req, res) => {
   const userId = req.params.userId;
   const { filter, sorting, pagination } = userFavoritesService.generateSettings(req.query);
   const result = await userFavoritesService.getFavoritesFilteredSortedPaginated(userId, filter, sorting, pagination);
-  console.log(`Filtered, sorted and paginated favorites of User with 'id=${userId}' were returned with page=${pagination.pageNumber} and size=${pagination.pageSize}.`);
+  logger.debug(`Filtered, sorted and paginated favorites of User with 'id=${userId}' were returned with page=${pagination.pageNumber} and size=${pagination.pageSize}.`);
   res.status(httpStatusCodes.OK).json({status: true, data: result});
 }
