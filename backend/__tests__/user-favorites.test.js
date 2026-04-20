@@ -38,16 +38,30 @@ const movie2 = {
   imdbId: ' tt1504320 '
 };
 
-// Mock data to create tokens for testing Authentication
+// Mock data to create tokens for testing Authentication / Authorization
 const admin = {
   _id: '69b0097d64c2925feca9063c',
   username: 'admin@example.com',
   firstname: 'Admin',
   roles: ['ADMIN']
 };
+const reader = {
+  _id: '69b0097d64c2925feca9063e',
+  username: 'reader@example.com',
+  firstname: 'Reader',
+  roles: ['READER']
+};
+const noRoles = {
+  _id: '69b0097d64c2925feca9063f',
+  username: 'no-roles@example.com',
+  firstname: 'NoRoles',
+  roles: []
+};
 
 // Test tokens
 const adminToken = authService.generateAccessToken(admin);
+const readerToken = authService.generateAccessToken(reader);
+const noRolesToken = authService.generateAccessToken(noRoles);
 const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTVlZjE1ZWNhMGI5ZTZhNDhhNjkyOCIsInVzZXJuYW1lIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJmaXJzdG5hbWUiOiJBZG1pbiIsInJvbGVzIjpbIkFETUlOIl0sImlhdCI6MTc3NjY3NjY4OCwiZXhwIjoxNzc2Njc2NjkzfQ.9rWzcw2ntRBo86A8FwPJnx_0RAtana3QP7aarbOenXw';
 const invalidSignature = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGNydWQuY29tIiwiZmlyc3RuYW1lIjoiVGFuaWEiLCJyb2xlcyI6WyJBRE1JTiJdLCJpYXQiOjE3NzMwOTU1MTUsImV4cCI6MTc3MzA5OTExNX0.pRUGflVd467xrBCBEL3F8eagE1XAhJtdkJQm8UgMxRs';
 const malformedToken = '$123 456';
@@ -73,6 +87,16 @@ const errors = {
     name: 'AccessDeniedError',
     statusCode: 403,
     message: 'Access Denied: jwt malformed'
+  },
+  err403noRoles: {
+    name: 'AccessDeniedError',
+    statusCode: 403,
+    message: 'Access Denied: no roles found'
+  },
+  err403insufficientPermissions: {
+    name: 'AccessDeniedError',
+    statusCode: 403,
+    message: 'Access Denied: insufficient permissions'
   }
 };
 
@@ -223,6 +247,28 @@ describe('Requests for /api/users/:userId/favorites', () => {
       expect(res.statusCode).toBe(403);
       expect(res.body.status).toBe(false);
       expect(res.body.data).toEqual(errors.err403malformedToken);
+    });
+
+    test('GET Returns a list with ALL the favorites of the user with a given ID - AccessDeniedError - token does not include any roles', async () => {
+      const user = await userService.getUserByUsername(username);
+      const res = await request(app)
+        .get(`/api/users/${user._id}/favorites`)
+        .set('Authorization', `Bearer ${noRolesToken}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403noRoles);
+    });
+
+    test('GET Returns a list with ALL the favorites of the user with a given ID - AccessDeniedError - token does not include the role ADMIN or EDITOR', async () => {
+      const user = await userService.getUserByUsername(username);
+      const res = await request(app)
+        .get(`/api/users/${user._id}/favorites`)
+        .set('Authorization', `Bearer ${readerToken}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403insufficientPermissions);
     });
 
     describe('Tests only for Filtering', () => {
@@ -1333,6 +1379,32 @@ describe('Requests for /api/users/:userId/favorites', () => {
       expect(res.body.status).toBe(false);
       expect(res.body.data).toEqual(errors.err403malformedToken);
     });
+
+    test('POST Inserts a movie to the `Favorites` list of the user with a given ID - AccessDeniedError - token does not include any roles', async () => {
+      const user = await userService.getUserByUsername(username);
+      const favorite = movie1;
+      const res = await request(app)
+        .post(`/api/users/${user._id}/favorites`)
+        .set('Authorization', `Bearer ${noRolesToken}`)
+        .send(favorite);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403noRoles);
+    });
+
+    test('POST Inserts a movie to the `Favorites` list of the user with a given ID - AccessDeniedError - token does not include the role ADMIN or EDITOR', async () => {
+      const user = await userService.getUserByUsername(username);
+      const favorite = movie1;
+      const res = await request(app)
+        .post(`/api/users/${user._id}/favorites`)
+        .set('Authorization', `Bearer ${readerToken}`)
+        .send(favorite);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403insufficientPermissions);
+    });
   });
 });
 
@@ -1462,6 +1534,30 @@ describe('Requests for /api/users/:userId/favorites/:favoriteId', () => {
       expect(res.statusCode).toBe(403);
       expect(res.body.status).toBe(false);
       expect(res.body.data).toEqual(errors.err403malformedToken);
+    });
+
+    test('Get Returns the movie with a given ID from the `Favorites` list of the user with a given ID - AccessDeniedError - token does not include any roles', async () => {
+      const user = await userService.getUserByUsername(username);
+      const favorite = user.favorites.at(-1);   // the last inserted movie
+      const res = await request(app)
+        .get(`/api/users/${user._id}/favorites/${favorite._id}`)
+        .set('Authorization', `Bearer ${noRolesToken}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403noRoles);
+    });
+
+    test('Get Returns the movie with a given ID from the `Favorites` list of the user with a given ID - AccessDeniedError - token does not include the role ADMIN or EDITOR', async () => {
+      const user = await userService.getUserByUsername(username);
+      const favorite = user.favorites.at(-1);   // the last inserted movie
+      const res = await request(app)
+        .get(`/api/users/${user._id}/favorites/${favorite._id}`)
+        .set('Authorization', `Bearer ${readerToken}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403insufficientPermissions);
     });
   });
 
@@ -1611,6 +1707,30 @@ describe('Requests for /api/users/:userId/favorites/:favoriteId', () => {
       expect(res.statusCode).toBe(403);
       expect(res.body.status).toBe(false);
       expect(res.body.data).toEqual(errors.err403malformedToken);
+    });
+
+    test('DELETE Deletes the movie with a given ID from the `Favorites` list of the user with a given ID - AccessDeniedError - token does not include any roles', async () => {
+      const user = await userService.getUserByUsername(username);
+      const favorite = user.favorites.at(-1);   // the last inserted movie
+      const res = await request(app)
+        .delete(`/api/users/${user._id}/favorites/${favorite._id}`)
+        .set('Authorization', `Bearer ${noRolesToken}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403noRoles);
+    });
+
+    test('DELETE Deletes the movie with a given ID from the `Favorites` list of the user with a given ID - AccessDeniedError - token does not include the role ADMIN or EDITOR', async () => {
+      const user = await userService.getUserByUsername(username);
+      const favorite = user.favorites.at(-1);   // the last inserted movie
+      const res = await request(app)
+        .delete(`/api/users/${user._id}/favorites/${favorite._id}`)
+        .set('Authorization', `Bearer ${readerToken}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403insufficientPermissions);
     });
 
     test('DELETE Deletes the movie with a given ID from the `Favorites` list of the user with a given ID - remove movie 1', async () => {
