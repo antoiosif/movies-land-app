@@ -24,6 +24,22 @@ const user3 = {
   lastname: ' UserC ',
   roles: [' reader ']
 };
+const validCredentials = {
+  username: 'oscar@example.com',
+  password: 'P@ss12345'
+};
+const notFoundCredentials = {
+  username: 'oscar-academy@example.com',
+  password: 'P@ss12345'
+};
+const notActiveCredentials = {
+  username: 'jane@example.com',
+  password: 'P@ss12345'
+};
+const invalidCredentials = {
+  username: 'oscar@example.com',
+  password: 'P@ss123456'
+};
 
 const connectOptions = {
   dbName: 'moviesdb',
@@ -45,6 +61,67 @@ beforeAll(async () => {
 // Close connection to MongoDB
 afterAll(async () => {
   await mongoose.connection.close();
+});
+
+describe('Requests for /api/auth/login', () => {
+  test('POST Login user', async () => {
+    const payload = validCredentials;
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send(payload);
+    
+    expect(res.statusCode).toBe(200);
+    expect(res.body.status).toBe(true);
+    expect(res.body.data).not.toBeNull();
+  });
+
+  test('POST Login user - AppEntityNotFoundError - no user with the given username in DB', async () => {
+    const payload = notFoundCredentials;
+    const errData = {
+      name: 'AppEntityNotFoundError',
+      statusCode: 404,
+      message: `User with 'username=${payload.username}' not found.`
+    };
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send(payload);
+    
+    expect(res.statusCode).toBe(404);
+    expect(res.body.status).toBe(false);
+    expect(res.body.data).toEqual(errData);
+  });
+
+  test('POST Login user - AppNotAuthorizedError - user is not Active', async () => {
+    const payload = notActiveCredentials;
+    const errData = {
+      name: 'AppNotAuthorizedError',
+      statusCode: 401,
+      message: `User with 'username=${payload.username}' is not active.`
+    };
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send(payload);
+    
+    expect(res.statusCode).toBe(401);
+    expect(res.body.status).toBe(false);
+    expect(res.body.data).toEqual(errData);
+  });
+
+  test('POST Login user - AppNotAuthorizedError - invalid credentials', async () => {
+    const payload = invalidCredentials;
+    const errorData = {
+      name: 'AppNotAuthorizedError',
+      statusCode: 401,
+      message: `Authentication failed. User with 'username=${payload.username}' not logged in.`
+    };
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send(payload);
+    
+    expect(res.statusCode).toBe(401);
+    expect(res.body.status).toBe(false);
+    expect(res.body.data).toEqual(errorData);
+  });
 });
 
 describe('Requests for /api/auth/register', () => {

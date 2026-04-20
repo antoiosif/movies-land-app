@@ -17,5 +17,5 @@ mongoose.connect(process.env.MONGODB_URI, options)
       console.log(`Server running on port ${port}`);
     });
   },
-  error => console.error('Failed to connect to MongoDB', error)
+  err => console.error('Failed to connect to MongoDB', err)
 );

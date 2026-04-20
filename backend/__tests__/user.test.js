@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const request = require('supertest');
 const app = require('../app');
 const userService = require('../services/user.service');
+const authService = require('../services/auth.service');
 
 // Mock data for the users that will be used for the tests
 const invalidId = '69a18fe0c 3aac9024a00a9';
@@ -27,6 +28,44 @@ const user3 = {
   roles: [' reader ']
 };
 
+// Mock data to create tokens for testing Authentication
+const admin = {
+  _id: '69b0097d64c2925feca9063c',
+  username: 'admin@example.com',
+  firstname: 'Admin',
+  roles: ['ADMIN']
+};
+
+// Test tokens
+const adminToken = authService.generateAccessToken(admin);
+const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTVlZjE1ZWNhMGI5ZTZhNDhhNjkyOCIsInVzZXJuYW1lIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJmaXJzdG5hbWUiOiJBZG1pbiIsInJvbGVzIjpbIkFETUlOIl0sImlhdCI6MTc3NjY3NjY4OCwiZXhwIjoxNzc2Njc2NjkzfQ.9rWzcw2ntRBo86A8FwPJnx_0RAtana3QP7aarbOenXw';
+const invalidSignature = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGNydWQuY29tIiwiZmlyc3RuYW1lIjoiVGFuaWEiLCJyb2xlcyI6WyJBRE1JTiJdLCJpYXQiOjE3NzMwOTU1MTUsImV4cCI6MTc3MzA5OTExNX0.pRUGflVd467xrBCBEL3F8eagE1XAhJtdkJQm8UgMxRs';
+const malformedToken = '$123 456';
+
+// Default error responses
+const errors = {
+  err401noToken: {
+    name: 'AppNotAuthorizedError',
+    statusCode: 401,
+    message: 'Access Denied: no token provided'
+  },
+  err403expiredToken: {
+    name: 'AccessDeniedError',
+    statusCode: 403,
+    message: 'Access Denied: jwt expired'
+  },
+  err403invalidSignature: {
+    name: 'AccessDeniedError',
+    statusCode: 403,
+    message: 'Access Denied: invalid signature'
+  },
+  err403malformedToken: {
+    name: 'AccessDeniedError',
+    statusCode: 403,
+    message: 'Access Denied: jwt malformed'
+  }
+};
+
 const connectOptions = {
   dbName: 'moviesdb',
   retryWrites: true,
@@ -40,7 +79,7 @@ beforeEach(async () => {
   await mongoose.connect(process.env.MONGODB_URI, connectOptions)
   .then(
     () => console.log('Connection to MongoDB for Jest established'),
-    err => console.log('Failed to connect to MongoDB for Jest', err)
+    err => console.error('Failed to connect to MongoDB for Jest', err)
   );
 });
 
@@ -57,7 +96,8 @@ describe('Requests for /api/users', () => {
 
     test('GET Returns a list with ALL the users - no filtering, default settings for sorting and pagination', async () => {
       const res = await request(app)
-        .get('/api/users');
+        .get('/api/users')
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(res.statusCode).toBe(200);
       expect(res.body.status).toBe(true);
@@ -83,7 +123,8 @@ describe('Requests for /api/users', () => {
       const pageSize = 1;
       const pageNumber = 2;
       const res = await request(app)
-        .get(`/api/users?${filter1}=${value1}&${filter2}=${value2}&${filter3}=${value3}&sortBy_${sortField}=${sortDir}&pageSize=${pageSize}&pageNumber=${pageNumber}`);
+        .get(`/api/users?${filter1}=${value1}&${filter2}=${value2}&${filter3}=${value3}&sortBy_${sortField}=${sortDir}&pageSize=${pageSize}&pageNumber=${pageNumber}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(res.statusCode).toBe(200);
       expect(res.body.status).toBe(true);
@@ -96,13 +137,53 @@ describe('Requests for /api/users', () => {
       expect(res.body.data.documents[0].username).toBe('sherlock@example.com');
     });
 
+    test('GET Returns a list with ALL the users - AppNotAuthorizedError - no token provided', async () => {
+      const res = await request(app)
+        .get('/api/users');
+
+      expect(res.statusCode).toBe(401);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err401noToken);
+    });
+
+    test('GET Returns a list with ALL the users - AccessDeniedError - token has expired', async () => {
+      const res = await request(app)
+        .get('/api/users')
+        .set('Authorization', `Bearer ${expiredToken}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403expiredToken);
+    });
+
+    test('GET Returns a list with ALL the users - AccessDeniedError - invalid signature', async () => {
+      const res = await request(app)
+        .get('/api/users')
+        .set('Authorization', `Bearer ${invalidSignature}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403invalidSignature);
+    });
+
+    test('GET Returns a list with ALL the users - AccessDeniedError - token does not have the correct format', async () => {
+      const res = await request(app)
+        .get('/api/users')
+        .set('Authorization', `Bearer ${malformedToken}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403malformedToken);
+    });
+
     describe('Tests only for Filtering', () => {
       // Positive scenarios
       test('GET Returns a list with the users filtered by `createdAt_gte` (comparison) - default settings for sorting and pagination', async () => {
         const filter = 'createdAt_gte';
         const value = '2026-03-30';
         const res = await request(app)
-          .get(`/api/users?${filter}=${value}`);
+          .get(`/api/users?${filter}=${value}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -122,7 +203,8 @@ describe('Requests for /api/users', () => {
         const filter2 = 'createdAt_lte';
         const value2 = '2026-04-02';
         const res = await request(app)
-          .get(`/api/users?${filter1}=${value1}&${filter2}=${value2}`);
+          .get(`/api/users?${filter1}=${value1}&${filter2}=${value2}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -140,7 +222,8 @@ describe('Requests for /api/users', () => {
         const filter = 'createdAt';
         const value = '2026-04-01T05:38:02.100Z';
         const res = await request(app)
-          .get(`/api/users?${filter}=${value}`);
+          .get(`/api/users?${filter}=${value}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -158,7 +241,8 @@ describe('Requests for /api/users', () => {
         const value1 = '2026-04-01T05:38:02.100Z';
         const value2 = '2026-03-29T09:19:15.544Z';
         const res = await request(app)
-          .get(`/api/users?${filter}=${value1}&${filter}=${value2}`);
+          .get(`/api/users?${filter}=${value1}&${filter}=${value2}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -178,7 +262,8 @@ describe('Requests for /api/users', () => {
         const filter2 = 'uodatedAt';
         const value2 = '2026-03-29T09:19:15.544Z';
         const res = await request(app)
-          .get(`/api/users?${filter1}=${value1}&${filter2}=${value2}`);
+          .get(`/api/users?${filter1}=${value1}&${filter2}=${value2}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -195,7 +280,8 @@ describe('Requests for /api/users', () => {
         const filter = 'firstname';
         const value = 'he';
         const res = await request(app)
-          .get(`/api/users?${filter}=${value}`);
+          .get(`/api/users?${filter}=${value}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -214,7 +300,8 @@ describe('Requests for /api/users', () => {
         const value1 = 'he';
         const value2 = 'eliza';
         const res = await request(app)
-          .get(`/api/users?${filter}=${value1}&${filter}=${value2}`);
+          .get(`/api/users?${filter}=${value1}&${filter}=${value2}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -234,7 +321,8 @@ describe('Requests for /api/users', () => {
         const filter2 = 'lastname';
         const value2 = 'poir';
         const res = await request(app)
-          .get(`/api/users?${filter1}=${value1}&${filter2}=${value2}`);
+          .get(`/api/users?${filter1}=${value1}&${filter2}=${value2}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -259,7 +347,8 @@ describe('Requests for /api/users', () => {
         const filter5 = 'lastname';
         const value5 = 'bennet';
         const res = await request(app)
-          .get(`/api/users?${filter1}=${value1}&${filter2}=${value2}&${filter3}=${value3}&${filter4}=${value4}&${filter5}=${value5}`);
+          .get(`/api/users?${filter1}=${value1}&${filter2}=${value2}&${filter3}=${value3}&${filter4}=${value4}&${filter5}=${value5}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -277,7 +366,8 @@ describe('Requests for /api/users', () => {
         const filter = 'favorites.title';
         const value = 'The';
         const res = await request(app)
-          .get(`/api/users?${filter}=${value}`);
+          .get(`/api/users?${filter}=${value}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -296,7 +386,8 @@ describe('Requests for /api/users', () => {
         const value1 = '2026-03-30';
         const value2 = '2026-04-02';
         const res = await request(app)
-          .get(`/api/users?${filter}=${value1}&${filter}=${value2}`);
+          .get(`/api/users?${filter}=${value1}&${filter}=${value2}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -322,7 +413,8 @@ describe('Requests for /api/users', () => {
           message: 'Validation failed.'
         };
         const res = await request(app)
-          .get(`/api/users?${filter}=${value}`);
+          .get(`/api/users?${filter}=${value}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(400);
         expect(res.body.status).toBe(false);
@@ -341,7 +433,8 @@ describe('Requests for /api/users', () => {
           message: 'Validation failed.'
         };
         const res = await request(app)
-          .get(`/api/users?${filter}=${value}`);
+          .get(`/api/users?${filter}=${value}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(400);
         expect(res.body.status).toBe(false);
@@ -360,7 +453,8 @@ describe('Requests for /api/users', () => {
           message: 'Validation failed.'
         };
         const res = await request(app)
-          .get(`/api/users?${filter}=${value}`);
+          .get(`/api/users?${filter}=${value}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(400);
         expect(res.body.status).toBe(false);
@@ -374,7 +468,8 @@ describe('Requests for /api/users', () => {
         const sortField = 'id';
         const sortDir = 1;
         const res = await request(app)
-          .get(`/api/users?sortBy_${sortField}=${sortDir}`);
+          .get(`/api/users?sortBy_${sortField}=${sortDir}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -392,7 +487,8 @@ describe('Requests for /api/users', () => {
         const sortField = 'lastname';
         const sortDir = 1;
         const res = await request(app)
-          .get(`/api/users?sortBy_${sortField}=${sortDir}`);
+          .get(`/api/users?sortBy_${sortField}=${sortDir}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -411,7 +507,8 @@ describe('Requests for /api/users', () => {
         const sortField = 'createdAt';
         const sortDir = -1;
         const res = await request(app)
-          .get(`/api/users?sortBy_${sortField}=${sortDir}`);
+          .get(`/api/users?sortBy_${sortField}=${sortDir}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -431,7 +528,8 @@ describe('Requests for /api/users', () => {
         const sortField2 = 'firstname';
         const sortDir2 = -1;
         const res = await request(app)
-          .get(`/api/users?sortBy_${sortField1}=${sortDir1}&sortBy_${sortField2}=${sortDir2}`);
+          .get(`/api/users?sortBy_${sortField1}=${sortDir1}&sortBy_${sortField2}=${sortDir2}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -452,7 +550,8 @@ describe('Requests for /api/users', () => {
         const sortField = 'lastname';
         const sortDir = 1;
         const res = await request(app)
-          .get(`/api/users?${prefix}${sortField}=${sortDir}`);
+          .get(`/api/users?${prefix}${sortField}=${sortDir}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -471,7 +570,8 @@ describe('Requests for /api/users', () => {
         const sortField = 'lastname';
         const sortDir = 1;
         const res = await request(app)
-          .get(`/api/users?${prefix}${sortField}=${sortDir}`);
+          .get(`/api/users?${prefix}${sortField}=${sortDir}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -489,7 +589,8 @@ describe('Requests for /api/users', () => {
         const sortField = '';
         const sortDir = 1;
         const res = await request(app)
-          .get(`/api/users?sortBy_${sortField}=${sortDir}`);
+          .get(`/api/users?sortBy_${sortField}=${sortDir}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -507,7 +608,8 @@ describe('Requests for /api/users', () => {
         const sortField = 'roles';
         const sortDir = 1;
         const res = await request(app)
-          .get(`/api/users?sortBy_${sortField}=${sortDir}`);
+          .get(`/api/users?sortBy_${sortField}=${sortDir}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -525,7 +627,8 @@ describe('Requests for /api/users', () => {
         const sortField = 'lastname';
         const sortDir = 'abc';
         const res = await request(app)
-          .get(`/api/users?sortBy_${sortField}=${sortDir}`);
+          .get(`/api/users?sortBy_${sortField}=${sortDir}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -543,7 +646,8 @@ describe('Requests for /api/users', () => {
         const sortField = 'lastname';
         const sortDir = 2;
         const res = await request(app)
-          .get(`/api/users?sortBy_${sortField}=${sortDir}`);
+          .get(`/api/users?sortBy_${sortField}=${sortDir}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -562,7 +666,8 @@ describe('Requests for /api/users', () => {
         const sortDir1 = -1;
         const sortDir2 = 1;
         const res = await request(app)
-          .get(`/api/users?sortBy_${sortField}=${sortDir1}&sortBy_${sortField}=${sortDir2}`);
+          .get(`/api/users?sortBy_${sortField}=${sortDir1}&sortBy_${sortField}=${sortDir2}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -583,7 +688,8 @@ describe('Requests for /api/users', () => {
         const pageSize = 2;
         const pageNumber = 2;
         const res = await request(app)
-          .get(`/api/users?pageSize=${pageSize}&pageNumber=${pageNumber}`);
+          .get(`/api/users?pageSize=${pageSize}&pageNumber=${pageNumber}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -602,7 +708,8 @@ describe('Requests for /api/users', () => {
         const pageSize = ['abc'];
         const pageNumber = 'abc';
         const res = await request(app)
-          .get(`/api/users?pageSize=${pageSize}&pageNumber=${pageNumber}`);
+          .get(`/api/users?pageSize=${pageSize}&pageNumber=${pageNumber}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -620,7 +727,8 @@ describe('Requests for /api/users', () => {
         const pageSize = -1;
         const pageNumber = 0;
         const res = await request(app)
-          .get(`/api/users?pageSize=${pageSize}&pageNumber=${pageNumber}`);
+          .get(`/api/users?pageSize=${pageSize}&pageNumber=${pageNumber}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -638,7 +746,8 @@ describe('Requests for /api/users', () => {
         const pageSize = 1.2;
         const pageNumber = 5.9;
         const res = await request(app)
-          .get(`/api/users?pageSize=${pageSize}&pageNumber=${pageNumber}`);
+          .get(`/api/users?pageSize=${pageSize}&pageNumber=${pageNumber}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -656,7 +765,8 @@ describe('Requests for /api/users', () => {
         const pageSize = 2;
         const pageNumber = 2;
         const res = await request(app)
-          .get(`/api/users?pageSize=${pageSize}&pageNumber=${pageNumber}&pageSize=${pageSize}&pageNumber=${pageNumber}`);
+          .get(`/api/users?pageSize=${pageSize}&pageNumber=${pageNumber}&pageSize=${pageSize}&pageNumber=${pageNumber}`)
+          .set('Authorization', `Bearer ${adminToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe(true);
@@ -677,6 +787,7 @@ describe('Requests for /api/users', () => {
       const user = user1;
       const res = await request(app)
         .post('/api/users')
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(user);
 
       expect(res.statusCode).toBe(201);
@@ -698,6 +809,7 @@ describe('Requests for /api/users', () => {
       const user = user2;
       const res = await request(app)
         .post('/api/users')
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(user);
 
       expect(res.statusCode).toBe(201);
@@ -719,6 +831,7 @@ describe('Requests for /api/users', () => {
       const user = user3;
       const res = await request(app)
         .post('/api/users')
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(user);
 
       expect(res.statusCode).toBe(201);
@@ -759,6 +872,7 @@ describe('Requests for /api/users', () => {
       };
       const res = await request(app)
         .post('/api/users')
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(user);
 
       expect(res.statusCode).toBe(400);
@@ -781,6 +895,7 @@ describe('Requests for /api/users', () => {
       };
       const res = await request(app)
         .post('/api/users')
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(user);
 
       expect(res.statusCode).toBe(400);
@@ -810,6 +925,7 @@ describe('Requests for /api/users', () => {
       };
       const res = await request(app)
         .post('/api/users')
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(user);
 
       expect(res.statusCode).toBe(400);
@@ -837,6 +953,7 @@ describe('Requests for /api/users', () => {
       };
       const res = await request(app)
         .post('/api/users')
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(user);
 
       expect(res.statusCode).toBe(400);
@@ -853,11 +970,59 @@ describe('Requests for /api/users', () => {
       };
       const res = await request(app)
         .post('/api/users')
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(user);
 
       expect(res.statusCode).toBe(409);
       expect(res.body.status).toBe(false);
       expect(res.body.data).toEqual(errData);
+    });
+
+    test('POST Inserts a user - AppNotAuthorizedError - no token provided', async () => {
+      const user = user1;
+      const res = await request(app)
+        .post('/api/users')
+        .send(user);
+
+      expect(res.statusCode).toBe(401);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err401noToken);
+    });
+
+    test('POST Inserts a user - AccessDeniedError - token has expired', async () => {
+      const user = user1;
+      const res = await request(app)
+        .post('/api/users')
+        .set('Authorization', `Bearer ${expiredToken}`)
+        .send(user);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403expiredToken);
+    });
+
+    test('POST Inserts a user - AccessDeniedError - invalid signature', async () => {
+      const user = user1;
+      const res = await request(app)
+        .post('/api/users')
+        .set('Authorization', `Bearer ${invalidSignature}`)
+        .send(user);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403invalidSignature);
+    });
+
+    test('POST Inserts a user - AccessDeniedError - token does not have the correct format', async () => {
+      const user = user1;
+      const res = await request(app)
+        .post('/api/users')
+        .set('Authorization', `Bearer ${malformedToken}`)
+        .send(user);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403malformedToken);
     });
   });
 });
@@ -867,7 +1032,8 @@ describe('Requests for /api/users/:userId', () => {
     test('GET Returns the user with a given ID - get test user 1', async () => {
       const user = await userService.getUserByUsername(user1.username);
       const res = await request(app)
-        .get(`/api/users/${user._id}`);
+        .get(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(res.statusCode).toBe(200);
       expect(res.body.status).toBe(true);
@@ -895,7 +1061,8 @@ describe('Requests for /api/users/:userId', () => {
         message: 'Validation failed.'
       };
       const res = await request(app)
-        .get(`/api/users/${userId}`);
+        .get(`/api/users/${userId}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(res.statusCode).toBe(400);
       expect(res.body.status).toBe(false);
@@ -910,11 +1077,55 @@ describe('Requests for /api/users/:userId', () => {
         message: `User with 'id=${userId}' not found.`
       };
       const res = await request(app)
-        .get(`/api/users/${userId}`);
+        .get(`/api/users/${userId}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(res.statusCode).toBe(404);
       expect(res.body.status).toBe(false);
       expect(res.body.data).toEqual(errData);
+    });
+
+    test('GET Returns the user with a given ID - AppNotAuthorizedError - no token provided', async () => {
+      const user = await userService.getUserByUsername(user1.username);
+      const res = await request(app)
+        .get(`/api/users/${user._id}`);
+
+      expect(res.statusCode).toBe(401);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err401noToken);
+    });
+
+    test('GET Returns the user with a given ID - AccessDeniedError - token has expired', async () => {
+      const user = await userService.getUserByUsername(user1.username);
+      const res = await request(app)
+        .get(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${expiredToken}`);
+      
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403expiredToken);
+    });
+
+    test('GET Returns the user with a given ID - AccessDeniedError - invalid signature', async () => {
+      const user = await userService.getUserByUsername(user1.username);
+      const res = await request(app)
+        .get(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${invalidSignature}`);
+      
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403invalidSignature);
+    });
+
+    test('GET Returns the user with a given ID - AccessDeniedError - token does not have the correct format', async () => {
+      const user = await userService.getUserByUsername(user1.username);
+      const res = await request(app)
+        .get(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${malformedToken}`);
+      
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403malformedToken);
     });
   });
 
@@ -929,6 +1140,7 @@ describe('Requests for /api/users/:userId', () => {
       };
       const res = await request(app)
         .patch(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(updates);
 
       expect(res.statusCode).toBe(200);
@@ -954,6 +1166,7 @@ describe('Requests for /api/users/:userId', () => {
       };
       const res = await request(app)
         .patch(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(updates);
 
       expect(res.statusCode).toBe(200);
@@ -981,6 +1194,7 @@ describe('Requests for /api/users/:userId', () => {
       };
       const res = await request(app)
         .patch(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(updates);
 
       expect(res.statusCode).toBe(200);
@@ -1017,6 +1231,7 @@ describe('Requests for /api/users/:userId', () => {
       };
       const res = await request(app)
         .patch(`/api/users/${userId}`)
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(updates);
 
       expect(res.statusCode).toBe(400);
@@ -1039,6 +1254,7 @@ describe('Requests for /api/users/:userId', () => {
       };
       const res = await request(app)
         .patch(`/api/users/${userId}`)
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(updates);
 
       expect(res.statusCode).toBe(404);
@@ -1067,6 +1283,7 @@ describe('Requests for /api/users/:userId', () => {
       };
       const res = await request(app)
         .patch(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(updates);
 
       expect(res.statusCode).toBe(400);
@@ -1093,6 +1310,7 @@ describe('Requests for /api/users/:userId', () => {
       };
       const res = await request(app)
         .patch(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(updates);
 
       expect(res.statusCode).toBe(400);
@@ -1119,11 +1337,83 @@ describe('Requests for /api/users/:userId', () => {
       };
       const res = await request(app)
         .patch(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(updates);
 
       expect(res.statusCode).toBe(400);
       expect(res.body.status).toBe(false);
       expect(res.body.data).toEqual(errData);
+    });
+
+    test('PATCH Updates the user with a given ID - AppNotAuthorizedError - no token provided', async () => {
+      const user = await userService.getUserByUsername(user1.username);
+      const updates = {
+        firstname: 'TESTA',
+        lastname: 'USERA',
+        roles: ['READER'],
+        isActive: false
+      };
+      const res = await request(app)
+        .patch(`/api/users/${user._id}`)
+        .send(updates);
+
+      expect(res.statusCode).toBe(401);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err401noToken);
+    });
+
+    test('PATCH Updates the user with a given ID - AccessDeniedError - token has expired', async () => {
+      const user = await userService.getUserByUsername(user1.username);
+      const updates = {
+        firstname: 'TESTA',
+        lastname: 'USERA',
+        roles: ['READER'],
+        isActive: false
+      };
+      const res = await request(app)
+        .patch(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${expiredToken}`)
+        .send(updates);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403expiredToken);
+    });
+
+    test('PATCH Updates the user with a given ID - AccessDeniedError - invalid signature', async () => {
+      const user = await userService.getUserByUsername(user1.username);
+      const updates = {
+        firstname: 'TESTA',
+        lastname: 'USERA',
+        roles: ['READER'],
+        isActive: false
+      };
+      const res = await request(app)
+        .patch(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${invalidSignature}`)
+        .send(updates);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403invalidSignature);
+    });
+
+    test('PATCH Updates the user with a given ID - AccessDeniedError - token does not have the correct format', async () => {
+      const user = await userService.getUserByUsername(user1.username);
+      const updates = {
+        firstname: 'TESTA',
+        lastname: 'USERA',
+        roles: ['READER'],
+        isActive: false
+      };
+      const res = await request(app)
+        .patch(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${malformedToken}`)
+        .send(updates);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403malformedToken);
     });
   });
 
@@ -1131,7 +1421,8 @@ describe('Requests for /api/users/:userId', () => {
     test('DELETE Deletes the user with a given ID - delete test user 1', async () => {
       const user = await userService.getUserByUsername(user1.username);
       const res = await request(app)
-        .delete(`/api/users/${user._id}`);
+        .delete(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(res.statusCode).toBe(200);
       expect(res.body.status).toBe(true);
@@ -1159,7 +1450,8 @@ describe('Requests for /api/users/:userId', () => {
         message: 'Validation failed.'
       };
       const res = await request(app)
-        .delete(`/api/users/${userId}`);
+        .delete(`/api/users/${userId}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(res.statusCode).toBe(400);
       expect(res.body.status).toBe(false);
@@ -1174,17 +1466,62 @@ describe('Requests for /api/users/:userId', () => {
         message: `User with 'id=${userId}' not found.`
       };
       const res = await request(app)
-        .delete(`/api/users/${userId}`);
+        .delete(`/api/users/${userId}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(res.statusCode).toBe(404);
       expect(res.body.status).toBe(false);
       expect(res.body.data).toEqual(errData);
     });
 
-    test('DELETE Deletes the user with a given ID - delete test user 2', async () => {
+    test('DELETE Deletes the user with a given ID - AppNotAuthorizedError - no token provided', async () => {
       const user = await userService.getUserByUsername(user2.username);
       const res = await request(app)
         .delete(`/api/users/${user._id}`);
+
+      expect(res.statusCode).toBe(401);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err401noToken);
+    });
+
+    test('DELETE Deletes the user with a given ID - AccessDeniedError - token has expired', async () => {
+      const user = await userService.getUserByUsername(user2.username);
+      const res = await request(app)
+        .delete(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${expiredToken}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403expiredToken);
+    });
+
+    test('DELETE Deletes the user with a given ID - AccessDeniedError - invalid signature', async () => {
+      const user = await userService.getUserByUsername(user2.username);
+      const res = await request(app)
+        .delete(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${invalidSignature}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403invalidSignature);
+    });
+
+    test('DELETE Deletes the user with a given ID - AccessDeniedError - token does not have the correct format', async () => {
+      const user = await userService.getUserByUsername(user2.username);
+      const res = await request(app)
+        .delete(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${malformedToken}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.status).toBe(false);
+      expect(res.body.data).toEqual(errors.err403malformedToken);
+    });
+
+    test('DELETE Deletes the user with a given ID - delete test user 2', async () => {
+      const user = await userService.getUserByUsername(user2.username);
+      const res = await request(app)
+        .delete(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(res.statusCode).toBe(200);
       expect(res.body.status).toBe(true);
@@ -1204,7 +1541,8 @@ describe('Requests for /api/users/:userId', () => {
     test('DELETE Deletes the user with a given ID - delete test user 3', async () => {
       const user = await userService.getUserByUsername(user3.username);
       const res = await request(app)
-        .delete(`/api/users/${user._id}`);
+        .delete(`/api/users/${user._id}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(res.statusCode).toBe(200);
       expect(res.body.status).toBe(true);
