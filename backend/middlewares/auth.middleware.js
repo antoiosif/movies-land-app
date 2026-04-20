@@ -15,3 +15,17 @@ exports.verifyToken = (req, res, next) => {
   req.user = result.data;   // add the logged in user in the request
   next();
 }
+
+exports.verifyRoles = (...allowedRoles) => {
+  return (req, res, next) => {
+    const userRoles = req.user?.roles;
+    if (!userRoles || !userRoles.length) {
+      throw new AccessDeniedError('Access Denied: no roles found');
+    }
+    const hasPermission = userRoles.some(role => allowedRoles.includes(role));
+    if (!hasPermission) {
+      throw new AccessDeniedError('Access Denied: insufficient permissions');
+    }
+    next();
+  }
+}
