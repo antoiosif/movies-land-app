@@ -333,7 +333,7 @@ function castValue(key, value) {
   let castValue = value;
 
   // ObjectId fields
-  if (key === '_id' || key === 'imdbId') {
+  if (key === '_id') {
     if (Array.isArray(value)) {
       castValue = value.map(el => castToObjectId(key, el));
     } else {
