@@ -1,10 +1,11 @@
 {
   "name": "movies-land",
   "version": "1.0.0",
-  "description": "A movie search app that allows users to save movies as favorites. It is integrated with OMDb API for movie title search, and provides a CRUD API to manage users and their favorites.",
+  "description": "An app that manages users and their favorite movies. Provides a CRUD API to create, read, update and delete users from the DB, and also create, read and delete movies from the Favorites list of each user.",
   "keywords": [
     "users",
-    "favorites",
+    "movie",
+    "favorite",
     "CRUD"
   ],
   "homepage": "https://github.com/antoiosif/movies-land-app#readme",
