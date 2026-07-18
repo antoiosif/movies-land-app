@@ -133,6 +133,10 @@ userSchema.methods.toJSON = function () {
 // Middleware that hashes password after validation and before saving document to DB
 userSchema.pre('save', async function() {
   const SaltOrRounds = 10;
+
+  // Check if the `password` has been modified to avoid re-hash it
+  if (!this.isModified('password')) return;
+
   this.password = await bcrypt.hash(this.password, SaltOrRounds);
 });
 
